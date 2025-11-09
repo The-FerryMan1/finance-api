@@ -1,35 +1,20 @@
 import { Elysia } from "elysia";
-
 import { openapi } from '@elysiajs/openapi'
 import { betterAuth } from "./middleware/betterAuth";
-import { authHandler } from "./modules/auth";
 import cors from "@elysiajs/cors";
 
 
-const app = new Elysia()
+const app = new Elysia({prefix: "/api"})
 .use(
     cors({
-      origin: "http://localhost:3001",
+      origin: "http://localhost:3000",
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization"],
     }),
   )
-  .use(openapi({
-                documentation: {
-                    components: {
-                        securitySchemes: {
-                            bearerAuth: {
-                                type: 'http',
-                                scheme: 'bearer',
-                                bearerFormat: 'JWT'
-                            }
-                        }
-                    }
-                }
-            }))
+  .use(openapi())
   .use(betterAuth)
-  .use(authHandler)
   .get('/user', ({ user }) => user, {
     auth: true,
     
