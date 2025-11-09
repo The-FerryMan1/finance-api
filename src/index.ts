@@ -2,9 +2,10 @@ import { Elysia } from "elysia";
 import { openapi } from '@elysiajs/openapi'
 import { betterAuth } from "./middleware/betterAuth";
 import cors from "@elysiajs/cors";
+import { balanceRoute } from "./modules/balance";
 
 
-const app = new Elysia({prefix: "/api"})
+const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
 .use(
     cors({
       origin: "http://localhost:3000",
@@ -19,6 +20,7 @@ const app = new Elysia({prefix: "/api"})
     auth: true,
     
   })
+  .use(balanceRoute)
   .listen(3000)
 
 console.log(
