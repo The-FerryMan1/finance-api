@@ -17,7 +17,7 @@ export namespace BalanceModel {
         user_id: t.String(),
         current_balance: t.Number(),
         balance_type: t.Optional(t.String()),
-        created_at: t.Optional(t.String())
+        created_at: t.Date()
     })
 
     export type balanceRespone = typeof balanceRespone.static
