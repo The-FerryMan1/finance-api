@@ -26,4 +26,18 @@ export namespace BalanceModel {
 
     export type balanceBodyInvalid = typeof balanceBodyInvalid.static
 
+    export const deleteBalanceBody = t.Object({
+        id: t.Number()
+    })
+
+    export type deleteBalancebody = typeof deleteBalanceBody.static
+
+    export const deleteBalanceRespone = t.Literal("Balance Deleted successfully")
+
+    export type deleteBalanceRespone = typeof deleteBalanceRespone.static
+
+    export const deleteBalanceInvalid = t.Literal("Invalid ID")
+
+    export type deleteBalanceInvalid = typeof deleteBalanceInvalid.static
+
 }

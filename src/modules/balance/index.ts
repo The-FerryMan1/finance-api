@@ -1,6 +1,6 @@
-import Elysia from "elysia";
+import Elysia, { status } from "elysia";
 import { betterAuth } from "../../middleware/betterAuth";
-import { createBalance } from "./service";
+import { createBalance, deleteBalance } from "./service";
 import { BalanceModel } from "./model";
 
 export const balanceRoute = new Elysia()
@@ -18,3 +18,15 @@ export const balanceRoute = new Elysia()
             400: BalanceModel.balanceBodyInvalid
         }
     })
+    .delete('/balances/:id', async({params:{id}, user, set})=>{
+            const deleteBalanceRes = await deleteBalance({id: id}, user.id)
+            set.status = "No Content"
+    },{
+        auth: true,
+        params: BalanceModel.deleteBalanceBody,
+        response: {
+            204: BalanceModel.deleteBalanceRespone,
+            400: BalanceModel.deleteBalanceInvalid
+        }
+    }
+)
