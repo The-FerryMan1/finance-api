@@ -1,6 +1,6 @@
 import Elysia, { status } from "elysia";
 import { betterAuth } from "../../middleware/betterAuth";
-import { createBalance, deleteBalance } from "./service";
+import { createBalance, deleteBalance, readBalance, readBalanceById, updateBalance } from "./service";
 import { BalanceModel } from "./model";
 
 export const balanceRoute = new Elysia()
@@ -18,8 +18,44 @@ export const balanceRoute = new Elysia()
             400: BalanceModel.balanceBodyInvalid
         }
     })
+    .get('/balances', async({user, set})=>{
+        const response = await readBalance(user.id)
+        set.status = 200
+        return response
+    },{
+        auth:true, 
+        response:{
+            200: BalanceModel.getBalanceReponseArray}
+        }
+    )
+    .get('/balances/:id', async({user, params:{id}, set})=>{
+        const response = await readBalanceById({id},user.id)
+        set.status = 200
+        return response
+    },  
+    {
+        auth:true,
+        params: BalanceModel.getBalanceParam,
+        response:{
+            200: BalanceModel.getBalanceResponse
+        }
+    }
+    )
+    .put('/balances/:id', async({params:{id}, body, user})=>{
+        const response = await updateBalance({id}, body, user.id)
+        return response
+    },
+    {
+        auth: true,
+        params: BalanceModel.getBalanceParam,
+        body: BalanceModel.balanceBody,
+        response:{
+            200: BalanceModel.getBalanceResponse
+        }
+    }
+    )
     .delete('/balances/:id', async({params:{id}, user, set})=>{
-            const deleteBalanceRes = await deleteBalance({id: id}, user.id)
+            const deleteBalanceRes = await deleteBalance({id}, user.id)
             set.status = "No Content"
     },{
         auth: true,
@@ -29,4 +65,4 @@ export const balanceRoute = new Elysia()
             400: BalanceModel.deleteBalanceInvalid
         }
     }
-)
+    )
