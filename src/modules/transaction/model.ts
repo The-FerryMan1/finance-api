@@ -2,7 +2,9 @@ import { t } from "elysia";
 
 export namespace TransactionModel {
 
-    export const transactionParams = t.Object(t.Number())
+    export const transactionParams = t.Object({
+        id: t.Number()
+    })
 
     export type transactionParams = typeof transactionParams.static
 
