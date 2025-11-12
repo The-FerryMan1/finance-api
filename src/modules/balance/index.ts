@@ -4,6 +4,9 @@ import { createBalance, deleteBalance, readBalance, readBalanceById, updateBalan
 import { BalanceModel } from "./model";
 
 export const balanceRoute = new Elysia()
+    .onError(({ error }) => {
+        return new Response(error.toString())
+    })
     .use(betterAuth)
     .post('/balances', async({body, set, user})=>{
         
