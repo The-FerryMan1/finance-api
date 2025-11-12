@@ -1,12 +1,18 @@
-import Elysia from "elysia";
+import Elysia, { ElysiaCustomStatusResponse, t } from "elysia";
 import { betterAuth } from "../../middleware/betterAuth";
 import { createCategory, deleteCategory, readCategory, readCategoryByID, updateCategory } from "./service";
 import { CategoryModel } from "./model";
 
 
-const categoryRoute = new Elysia()
-    .onError(({ error }) => {
-        return new Response(error.toString())
+export const categoryRoute = new Elysia()
+    .onError(({ error, set }) => {
+        if(error instanceof ElysiaCustomStatusResponse){
+            set.status = error.code
+            return new Response(error.response)
+        }
+        set.status = 500
+         return new Response("internal service error" + error)
+        
     })
     .use(betterAuth)
     .post('/category', async ({ body, set, user }) => {
@@ -56,14 +62,11 @@ const categoryRoute = new Elysia()
     })
     .delete('/category/:id', async({params:{id}, user, set})=>{
 
-        const response = await deleteCategory({id}, user.id)
+        await deleteCategory({id}, user.id)
         set.status = 204
-        return response
+        return 
     },{
         auth: true,
         params: CategoryModel.categoryParamID,
-        response:{
-            204: CategoryModel.deletedResponse
-        }
     })
     

@@ -3,6 +3,7 @@ import { openapi } from '@elysiajs/openapi'
 import { betterAuth } from "./middleware/betterAuth";
 import cors from "@elysiajs/cors";
 import { balanceRoute } from "./modules/balance";
+import { categoryRoute } from "./modules/category";
 
 
 const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
@@ -21,6 +22,7 @@ const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
     
   })
   .use(balanceRoute)
+  .use(categoryRoute)
   .listen(3000)
 
 console.log(

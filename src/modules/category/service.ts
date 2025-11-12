@@ -31,10 +31,14 @@ export async function createCategory({ name, type }: CategoryModel.categoryBody,
 
 export async function readCategory(user_id: string) {
     const row = await db
-        .select()
+        .select({
+            id: category.id,
+            name: category.name,
+            type: category.type
+        })
         .from(category)
         .where(
-            eq(balance.userID, user_id)
+            eq(category.userID, user_id)
         )
 
     if (!row) throw status(404, 'Not Found')
@@ -48,7 +52,7 @@ export async function readCategoryByID({ id }: CategoryModel.categoryParamID, us
         .$count(category,
             and(
                 eq(category.id, id),
-                eq(balance.userID, user_id)
+                eq(category.userID, user_id)
             ))
 
     if (!rowCheck) throw status(404, 'Not Found')
@@ -79,8 +83,8 @@ export async function updateCategory({ id }: CategoryModel.categoryParamID, { na
     const checkRow = await db
         .$count(category,
             and(
-                eq(balance.id, id),
-                eq(balance.userID, user_id)
+                eq(category.id, id),
+                eq(category.userID, user_id)
             )
         )
 
@@ -94,8 +98,8 @@ export async function updateCategory({ id }: CategoryModel.categoryParamID, { na
         })
         .where(
             and(
-                eq(balance.id, id),
-                eq(balance.userID, user_id)
+                eq(category.id, id),
+                eq(category.userID, user_id)
             )
         )
         .returning({
@@ -104,24 +108,24 @@ export async function updateCategory({ id }: CategoryModel.categoryParamID, { na
             type: category.type
         })
 
-    if(!row) throw status(400, 'Bad Request')
-    
+    if (!row) throw status(400, 'Bad Request')
+
     return row
 }
 
-export async function deleteCategory({id}:CategoryModel.categoryParamID, user_id:string) {
-    
-     const checkRow = await db
+export async function deleteCategory({ id }: CategoryModel.categoryParamID, user_id: string) {
+
+    const checkRow = await db
         .$count(category,
             and(
-                eq(balance.id, id),
-                eq(balance.userID, user_id)
+                eq(category.id, id),
+                eq(category.userID, user_id)
             )
         )
-
+    console.log(checkRow)
     if (!checkRow) throw status(404, 'Not Found')
 
-        await db
+    await db
         .delete(category)
         .where(
             and(
