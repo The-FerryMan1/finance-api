@@ -1,7 +1,7 @@
 import Elysia from "elysia";
 import { betterAuth } from "../../middleware/betterAuth";
 import { TransactionModel } from "./model";
-import { createTransaction } from "./service";
+import { createTransaction, readTrasaction } from "./service";
 
 export const transactionRoute = new Elysia()
     .use(betterAuth)
@@ -13,4 +13,14 @@ export const transactionRoute = new Elysia()
         auth:true,
         params: TransactionModel.transactionParams,
         body: TransactionModel.transactionBody,
+    })
+    .get('/category/:id/transaction', async({params:{id}, user})=>{
+        const response = await readTrasaction({id}, user.id)
+        return response
+    },{
+        auth:true,
+        params: TransactionModel.transactionParams,
+        response:{
+            200:TransactionModel.transactionResponseArray
+        }
     })
