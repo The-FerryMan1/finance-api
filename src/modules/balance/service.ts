@@ -33,9 +33,6 @@ export async function readBalance(user_id: string) {
         .where(
             eq(balance.userID, user_id),
         )
-
-    if (!row) throw status(404, "Not Found")
-
     return row
 
 }

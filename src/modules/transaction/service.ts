@@ -74,11 +74,11 @@ export async function readTrasaction({ id: category_id }: TransactionModel.trans
 
 
     const checkCategoryRow = await db.$count(category, and(
-                eq(category.id, category_id),
-                eq(category.userID, user_id)
-            ))
+        eq(category.id, category_id),
+        eq(category.userID, user_id)
+    ))
 
-    if(!checkCategoryRow) throw status(404, "Category does not exists")
+    if (!checkCategoryRow) throw status(404, "Category does not exists")
 
     const row = await db
         .select(
@@ -98,6 +98,30 @@ export async function readTrasaction({ id: category_id }: TransactionModel.trans
                 eq(transaction.userID, user_id)
             )
         )
-    
+
     return row
 }
+
+export async function readTrasanctionHistory(userID: string) {
+
+
+    const row = await db
+        .select(
+            {
+                id: transaction.id,
+                category_id: transaction.categoryID,
+                balance_id: transaction.balanceID,
+                amount: transaction.amount,
+                description: transaction.description,
+                date: transaction.date
+            }
+        )
+        .from(transaction)
+        .where(
+            eq(transaction.userID, userID)
+        )
+        
+
+    return row
+}
+
