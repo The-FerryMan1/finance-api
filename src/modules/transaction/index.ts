@@ -5,26 +5,26 @@ import { createTransaction, HardDeleteTransanction, readTrasaction, readTrasanct
 
 export const transactionRoute = new Elysia()
     .use(betterAuth)
-    .post('/category/:id/transactions', async({user, body, set, params:{id}})=>{
-        const response = await createTransaction({id}, body, user.id)
+    .post('/category/:id/transactions', async ({ user, body, set, params: { id } }) => {
+        const response = await createTransaction({ id }, body, user.id)
         set.status = 201
         return response
-    },{
-        auth:true,
+    }, {
+        auth: true,
         params: TransactionModel.transactionParams,
         body: TransactionModel.transactionBody,
     })
-    .get('/category/:id/transactions', async({params:{id}, user})=>{
-        const response = await readTrasaction({id}, user.id)
+    .get('/category/:id/transactions', async ({ params: { id }, user }) => {
+        const response = await readTrasaction({ id }, user.id)
         return response
-    },{
-        auth:true,
+    }, {
+        auth: true,
         params: TransactionModel.transactionParams,
-        response:{
-            200:TransactionModel.transactionResponseArray
+        response: {
+            200: TransactionModel.transactionResponseArray
         }
     })
-    .get('/transactions', async({user, set})=>{
+    .get('/transactions', async ({ user, set }) => {
 
         const response = await readTrasanctionHistory(user.id)
         set.status = 200
@@ -32,23 +32,23 @@ export const transactionRoute = new Elysia()
 
     }, {
         auth: true,
-        response:{
+        response: {
             200: TransactionModel.transactionResponseArray
         }
     })
-    .patch('/transations/:id', async({params:{id}, user, set})=>{
-        await softDeleteTransanction({id}, user.id)
+    .patch('/transactions/:id', async ({ params: { id }, user, set }) => {
+        await softDeleteTransanction({ id }, user.id)
         set.status = 204
         return
-    },{
-        auth:true,
+    }, {
+        auth: true,
         params: TransactionModel.transactionParams
     })
-     .delete('/transations/:id', async({params:{id}, user, set})=>{
-        await HardDeleteTransanction({id}, user.id)
+    .delete('/transactions/:id', async ({ params: { id }, user, set }) => {
+        await HardDeleteTransanction({ id }, user.id)
         set.status = 204
         return
-    },{
-        auth:true,
+    }, {
+        auth: true,
         params: TransactionModel.transactionParams
     })
