@@ -125,3 +125,50 @@ export async function readTrasanctionHistory(userID: string) {
     return row
 }
 
+export async function softDeleteTransanction({id:transactionID}:TransactionModel.transactionParams, userID:string){
+    const rowCheck = await db
+    .$count(transaction, and(
+        eq(transaction.id, transactionID),
+        eq(transaction.userID, userID)
+    ))
+
+    if(!rowCheck) throw status(404, 'Not Found')
+        
+    await db
+    .update(transaction)
+    .set(
+        {
+            trash:true           
+        }
+    )
+    .where(
+        and(
+            eq(transaction.id, transactionID),
+            eq(transaction.userID, userID)
+        )
+    )
+
+    return
+}
+
+export async function HardDeleteTransanction({id:transactionID}:TransactionModel.transactionParams, userID:string){
+    const rowCheck = await db
+    .$count(transaction, and(
+        eq(transaction.id, transactionID),
+        eq(transaction.userID, userID)
+    ))
+
+    if(!rowCheck) throw status(404, 'Not Found')
+        
+    await db
+    .delete(transaction)
+    .where(
+        and(
+            eq(transaction.id, transactionID),
+            eq(transaction.userID, userID)
+        )
+    )
+
+    return
+}   
+
