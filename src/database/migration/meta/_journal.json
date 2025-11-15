@@ -22,6 +22,20 @@
       "when": 1763170270356,
       "tag": "0002_whole_prima",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1763187755569,
+      "tag": "0003_free_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763190453608,
+      "tag": "0004_spicy_hellion",
+      "breakpoints": true
     }
   ]
 }

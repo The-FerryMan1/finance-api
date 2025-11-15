@@ -7,6 +7,7 @@ import {
   timestamp,
   varchar,
   boolean,
+  AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { user } from "../../auth-schema";
 
@@ -55,6 +56,9 @@ export const category = pgTable("category", {
 
 export const transaction = pgTable("transaction", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  revertedID: integer("reverted_id").references(
+    (): AnyPgColumn => transaction.id, {onDelete: 'cascade'}
+  ),
   userID: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
@@ -72,4 +76,3 @@ export const transaction = pgTable("transaction", {
   trash: boolean("trash").notNull().default(false),
   date: timestamp("date").defaultNow(),
 });
-

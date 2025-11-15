@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, sql, aliasedTable, exists } from "drizzle-orm";
 import { db } from "../../database";
 import {
   balance,
@@ -157,29 +157,48 @@ export async function revertTransaction(
   { id: transactionID }: TransactionModel.transactionParams,
   userID: string,
 ) {
+  // const revertedTransaction = aliasedTable(transaction, "revertedTransaction");
   const [transactionRow] = await db
-    .select()
+    .select(
+      {
+        trasanctionDetails: transaction,
+        alreadyReverted: exists(
+          db.select({id: transaction.id})
+            .from(transaction)
+            .where(eq(transaction.revertedID, transactionID))
+        )
+      }
+    )
     .from(transaction)
     .where(
       and(eq(transaction.id, transactionID), eq(transaction.userID, userID)),
     );
 
-  if (!transactionRow) throw status(404, "Not Found");
-    console.log(transactionRow.type)
-  if (transactionRow.type === TransactionType.REVERT) throw status(400, 'Bad Request')
+    console.log(transactionRow)
+  if(!transactionRow || !transactionRow?.trasanctionDetails) throw status(404, 'Not Found')
+
+  const {alreadyReverted,trasanctionDetails} = transactionRow
+
+  if(alreadyReverted) throw status(400, 'The original transaction has been reverted already')
+
+  if(trasanctionDetails.type === TransactionType.REVERT) throw status(400, "Cannot revert a transaction that is already a revert type")
+
+
+  const newRevertTransaction = {
+      amount: transactionRow?.trasanctionDetails.amount,
+      revertedID: transactionRow?.trasanctionDetails.id,
+      balanceID: transactionRow?.trasanctionDetails.balanceID,
+      userID: transactionRow?.trasanctionDetails.userID,
+      categoryID: transactionRow?.trasanctionDetails.categoryID,
+      description: `REVERT: ${transactionRow?.trasanctionDetails.description}`,
+      type: "revert" as TransactionType.REVERT,
+    }
 
   await db.transaction(async (tx) => {
-    await tx.insert(transaction).values({
-      amount: transactionRow.amount,
-      balanceID: transactionRow.balanceID,
-      userID: transactionRow.userID,
-      categoryID: transactionRow.categoryID,
-      description: `REVERT: ${transactionRow.description}`,
-      type: "revert" as TransactionType.REVERT,
-    });
+    await tx.insert(transaction).values(newRevertTransaction);
 
     await tx.update(balance).set({
-      currentBalance: sql`${balance.currentBalance} + ${transactionRow.amount}`,
+      currentBalance: sql`${balance.currentBalance} + ${transactionRow?.trasanctionDetails.amount}`,
     });
   });
 
