@@ -1,7 +1,7 @@
 import Elysia from "elysia";
 import { betterAuth } from "../../middleware/betterAuth";
 import { TransactionModel } from "./model";
-import { createTransaction, HardDeleteTransanction, readTrasaction, readTrasanctionHistory, softDeleteTransanction } from "./service";
+import { createTransaction, HardDeleteTransanction, readTrasaction, readTrasanctionHistory, revertTransaction, softDeleteTransanction } from "./service";
 
 export const transactionRoute = new Elysia()
     .use(betterAuth)
@@ -36,7 +36,15 @@ export const transactionRoute = new Elysia()
             200: TransactionModel.transactionResponseArray
         }
     })
-    .patch('/transactions/:id', async ({ params: { id }, user, set }) => {
+    .put('/transactions/:id/revert', async({params:{id}, user, set})=>{
+        await revertTransaction({id}, user.id)
+        set.status = 204
+        return
+    },{
+        auth:true,
+        params:TransactionModel.transactionParams
+    })
+    .patch('/transactions/:id/trash', async ({ params: { id }, user, set }) => {
         await softDeleteTransanction({ id }, user.id)
         set.status = 204
         return
@@ -44,7 +52,7 @@ export const transactionRoute = new Elysia()
         auth: true,
         params: TransactionModel.transactionParams
     })
-    .delete('/transactions/:id', async ({ params: { id }, user, set }) => {
+    .delete('/transactions/:id/delete', async ({ params: { id }, user, set }) => {
         await HardDeleteTransanction({ id }, user.id)
         set.status = 204
         return

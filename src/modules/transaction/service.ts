@@ -165,6 +165,8 @@ export async function revertTransaction(
     );
 
   if (!transactionRow) throw status(404, "Not Found");
+    console.log(transactionRow.type)
+  if (transactionRow.type === TransactionType.REVERT) throw status(400, 'Bad Request')
 
   await db.transaction(async (tx) => {
     await tx.insert(transaction).values({
