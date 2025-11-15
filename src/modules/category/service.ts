@@ -72,7 +72,6 @@ export async function readCategoryByID({ id }: CategoryModel.categoryParamID, us
                 eq(category.userID, user_id)
             )
         )
-        .limit(1)
 
     return row
 

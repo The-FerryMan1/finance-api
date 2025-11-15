@@ -61,7 +61,7 @@ export async function readBalanceById({ id }: BalanceModel.getBalanceParam, user
                 eq(balance.id, id),
                 eq(balance.userID, user_id))
         )
-        .limit(1)
+
 
     return row
 }

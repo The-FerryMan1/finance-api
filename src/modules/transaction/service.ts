@@ -153,6 +153,11 @@ export async function HardDeleteTransanction(
   return;
 }
 
+  // db.select({id: transaction.id})
+  //           .from(transaction)
+  //           .where(eq(transaction.revertedID, transactionID))
+  //       )
+
 export async function revertTransaction(
   { id: transactionID }: TransactionModel.transactionParams,
   userID: string,
@@ -162,11 +167,7 @@ export async function revertTransaction(
     .select(
       {
         trasanctionDetails: transaction,
-        alreadyReverted: exists(
-          db.select({id: transaction.id})
-            .from(transaction)
-            .where(eq(transaction.revertedID, transactionID))
-        )
+        alreadyReverted: db.$count(transaction, eq(transaction.revertedID, transactionID))
       }
     )
     .from(transaction)
