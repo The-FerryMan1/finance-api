@@ -10,7 +10,7 @@ import { transactionRoute } from "./modules/transaction";
 const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
 .use(
     cors({
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", Bun.env.CLIENT_DOMAIN as string],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization"],
