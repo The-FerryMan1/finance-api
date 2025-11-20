@@ -2,9 +2,6 @@ import { Elysia } from "elysia";
 import { openapi } from '@elysiajs/openapi'
 import { betterAuth } from "./middleware/betterAuth";
 import cors from "@elysiajs/cors";
-import { balanceRoute } from "./modules/balance";
-import { categoryRoute } from "./modules/category";
-import { transactionRoute } from "./modules/transaction";
 
 
 const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
@@ -22,10 +19,7 @@ const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
     auth: true,
     
   })
-  .use(balanceRoute)
-  .use(categoryRoute)
-  .use(transactionRoute)
-  .listen(3000)
+  .listen(Bun.env.PORT as string || 3000)
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
