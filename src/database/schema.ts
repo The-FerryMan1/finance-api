@@ -25,7 +25,7 @@ export enum FinancialAccountType {
   Loan = "Loan"
 }
 
-export const AccountType = pgEnum('account-type',
+export const AccountType = pgEnum('account_type',
   [
     FinancialAccountType.Checking,
     FinancialAccountType.Savings,
@@ -94,7 +94,7 @@ export enum GoalType {
 export const GoalTypeEnum = pgEnum('cycle_type',
   [
     GoalType.Savings,
-    GoalType.Savings,
+    GoalType.DebtPayoff,
   ]
 )
 
@@ -148,87 +148,3 @@ export const Goals = pgTable("goals", {
   targetDate: date("target_date"),
   currentValue: numeric('target_amount', { mode: "number", precision: 15, scale: 2 }).notNull().default(0.00),
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export enum CategoryType {
-//   INCOME = "income",
-//   EXPENSE = "expense",
-// }
-
-// export enum TransactionType {
-//   ORIGINAL = "original",
-//   MODIFIED = "modified",
-//   REVERT = "revert",
-// }
-
-// export const TransactionEnum = pgEnum("transaction_type", [
-//   TransactionType.ORIGINAL,
-//   TransactionType.MODIFIED,
-//   TransactionType.REVERT,
-// ] as const);
-
-// export const categoryEnum = pgEnum("category_type", [
-//   CategoryType.EXPENSE,
-//   CategoryType.INCOME,
-// ] as const);
-
-// export const balance = pgTable("balance", {
-//   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-//   userID: text("user_id")
-//     .notNull()
-//     .references(() => user.id, { onDelete: "cascade" }),
-//   createdAT: timestamp("created_at").defaultNow(),
-//   currentBalance: doublePrecision("current_balance").notNull().default(0),
-//   trash: boolean("trash").notNull().default(false),
-//   balanceType: varchar("balance_type", { length: 255 }),
-// });
-
-// export const category = pgTable("category", {
-//   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-//   userID: text("user_id")
-//     .notNull()
-//     .references(() => user.id, { onDelete: "cascade" }),
-//   name: varchar("name", { length: 255 }).notNull().default("unamaed"),
-//   trash: boolean("trash").notNull().default(false),
-//   type: categoryEnum().notNull().default(CategoryType.EXPENSE),
-// });
-
-// export const transaction = pgTable("transaction", {
-//   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-//   revertedID: integer("reverted_id").references(
-//     (): AnyPgColumn => transaction.id, {onDelete: 'cascade'}
-//   ),
-//   userID: text("user_id")
-//     .notNull()
-//     .references(() => user.id, { onDelete: "cascade" }),
-//   balanceID: integer("balance_id")
-//     .notNull()
-//     .references(() => balance.id, { onDelete: "cascade" }),
-//   categoryID: integer("category_id")
-//     .notNull()
-//     .references(() => category.id, { onDelete: "cascade" }),
-//   amount: doublePrecision("amount").notNull(),
-//   description: varchar("description", { length: 255 }).default(
-//     "no description",
-//   ),
-//   type: TransactionEnum().notNull().default(TransactionType.ORIGINAL),
-//   trash: boolean("trash").notNull().default(false),
-//   date: timestamp("date").defaultNow(),
-// });

@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1763101192233,
-      "tag": "0000_greedy_layla_miller",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1763101344799,
-      "tag": "0001_smiling_cassandra_nova",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1763170270356,
-      "tag": "0002_whole_prima",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1763187755569,
-      "tag": "0003_free_tarot",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1763190453608,
-      "tag": "0004_spicy_hellion",
+      "when": 1763641445729,
+      "tag": "0000_puzzling_solo",
       "breakpoints": true
     }
   ]
