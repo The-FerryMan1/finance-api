@@ -3,10 +3,10 @@ import { betterAuth } from "../../middleware/betterAuth";
 import { FinancialAccountModel } from "./financial_account.model";
 import { FinancialAccountService } from "./financial_account.service";
 
-export const financialAccountHandler = new Elysia({ prefix: "financial" })
+export const FinancialAccountHandler = new Elysia({ prefix: "financial" })
     .use(betterAuth)
     .post("/onboard", async ({ body, user, set }) => {
-        const response = await FinancialAccountService.FinancialAccountOnboard({ ...body, userID: user.id })
+        const response = await FinancialAccountService.FinancialAccountOnboard(body, {userID:user.id})
         set.status = 201
         return response
     }, {
@@ -17,7 +17,7 @@ export const financialAccountHandler = new Elysia({ prefix: "financial" })
         }
     })
     .post("/", async ({ body, user, set }) => {
-        const response = await FinancialAccountService.FinancialAccountOnboard({ ...body, userID: user.id })
+        const response = await FinancialAccountService.FinancialAccountOnboard(body, {userID:user.id})
         set.status = 201
         return response
     }, {
@@ -37,7 +37,7 @@ export const financialAccountHandler = new Elysia({ prefix: "financial" })
             200: FinancialAccountModel.FinancialAccountResponseArray
         }
     })
-    .get("/:id", async ({ user, set, params:{FinancialAccountID} }) => {
+    .get("/:FinancialAccountID", async ({ user, set, params:{FinancialAccountID} }) => {
         const response = await FinancialAccountService.ReadFinancialAccountById({FinancialAccountID},{ userID: user.id})
         set.status = 200
         return response
@@ -45,11 +45,12 @@ export const financialAccountHandler = new Elysia({ prefix: "financial" })
         auth: true,
         params:FinancialAccountModel.FinancialAccountParams,
         response: {
-            200: FinancialAccountModel.FinancialAccountResponse
+            200: FinancialAccountModel.FinancialAccountResponse,
+            400: FinancialAccountModel.FinancialAccountParamsInvalid
         }
     })
-    .put("/", async ({body, user, set, params:{FinancialAccountID}}) => {
-        const response = await FinancialAccountService.ModifyFinancialAccount({...body, userID:user.id}, {FinancialAccountID})
+    .put("/:FinancialAccountID", async ({body, user, set, params:{FinancialAccountID}}) => {
+        const response = await FinancialAccountService.ModifyFinancialAccount(body, {userID:user.id},{FinancialAccountID})
         set.status = 200
         return response
     },{
@@ -60,7 +61,7 @@ export const financialAccountHandler = new Elysia({ prefix: "financial" })
             200: FinancialAccountModel.FinancialAccountResponse
         }
     })
-    .delete("/", async ({user, set, params:{FinancialAccountID}}) => {
+    .delete("/:FinancialAccountID", async ({user, set, params:{FinancialAccountID}}) => {
         const response = await FinancialAccountService.DeleteFinancialAccount({userID: user.id}, {FinancialAccountID})
         set.status = 200
         return response

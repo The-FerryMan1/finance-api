@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { openapi } from '@elysiajs/openapi'
 import { betterAuth } from "./middleware/betterAuth";
 import cors from "@elysiajs/cors";
+import { FinancialAccountHandler } from "./modules/financial_account/financial_account.handler";
 
 
 const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
@@ -14,11 +15,7 @@ const app = new Elysia({prefix: `/api/${Bun.env.API_VERSION as string}`})
     }),
   )
   .use(openapi())
-  .use(betterAuth)
-  .get('/user', ({ user }) => user, {
-    auth: true,
-    
-  })
+  .use(FinancialAccountHandler)
   .listen(Bun.env.PORT as string || 3000)
 
 console.log(

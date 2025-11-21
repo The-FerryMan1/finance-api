@@ -4,7 +4,6 @@ import {FinancialAccountType} from "../../database/schema"
 export namespace FinancialAccountModel {
 
     export const FinancialAccountBody = t.Object({
-        userID: t.String(),
         accountName: t.String(),
         accountType: t.Enum(FinancialAccountType),
         institution: t.String(),
@@ -14,10 +13,15 @@ export namespace FinancialAccountModel {
     export type FinancialAccountBody = typeof FinancialAccountBody.static
 
     export const FinancialAccountParams = t.Object({
-        FinancialAccountID: t.Number()
+        FinancialAccountID: t.String()
     })
 
     export type FinancialAccountParams = typeof FinancialAccountParams.static
+
+    export const FinancialAccountParamsInvalid = t.Literal("Parameter should be numeric")
+
+    export type FinancialAccountParamsInvalid = typeof FinancialAccountParamsInvalid.static
+
 
     export const FinancialAccountResponse = t.Object({
         id: t.Number(),

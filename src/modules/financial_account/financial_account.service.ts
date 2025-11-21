@@ -12,7 +12,7 @@ const userIDModel = t.Object({
 type userIDModel = typeof userIDModel.static
 
 export namespace FinancialAccountService {
-    export async function FinancialAccountOnboard({ accountName, accountType, currentBalance, institution, userID }: FinancialAccountModel.FinancialAccountBody) {
+    export async function FinancialAccountOnboard({ accountName, accountType, currentBalance, institution}: FinancialAccountModel.FinancialAccountBody, {userID}:userIDModel ) {
 
         const [row] = await db
             .insert(FinancialAccount)
@@ -47,6 +47,9 @@ export namespace FinancialAccountService {
 
     export async function ReadFinancialAccountById({ FinancialAccountID }: FinancialAccountModel.FinancialAccountParams, { userID }: userIDModel) {
 
+        const FinancialAccountIDConverted = parseInt(FinancialAccountID)
+
+        if (isNaN(FinancialAccountIDConverted)) throw status(400, "Parameter should be numeric" satisfies FinancialAccountModel.FinancialAccountParamsInvalid)
 
         const [row] = await db
             .select()
@@ -54,20 +57,26 @@ export namespace FinancialAccountService {
             .where(
                 and(
                     eq(FinancialAccount.userID, userID),
-                    eq(FinancialAccount.id, FinancialAccountID)
+                    eq(FinancialAccount.id, FinancialAccountIDConverted)
                 )
             )
             .limit(1)
 
+
+        if(!row) throw status(404, 'Not Found')
+
         return row
     }
 
-    export async function ModifyFinancialAccount({ accountName, accountType, currentBalance, institution, userID }: FinancialAccountModel.FinancialAccountBody, { FinancialAccountID }: FinancialAccountModel.FinancialAccountParams) {
+    export async function ModifyFinancialAccount({ accountName, accountType, currentBalance, institution}: FinancialAccountModel.FinancialAccountBody,{userID}:userIDModel, { FinancialAccountID }: FinancialAccountModel.FinancialAccountParams) {
 
+        const FinancialAccountIDConverted = parseInt(FinancialAccountID)
+
+        if (isNaN(FinancialAccountIDConverted)) throw status(400, "Parameter should be numeric" satisfies FinancialAccountModel.FinancialAccountParamsInvalid)
         const checkRow = await db
             .$count(FinancialAccount,
                 and(
-                    eq(FinancialAccount.id, FinancialAccountID),
+                    eq(FinancialAccount.id, FinancialAccountIDConverted),
                     eq(FinancialAccount.userID, userID))
             )
 
@@ -85,7 +94,7 @@ export namespace FinancialAccountService {
             )
             .where(
                 and(
-                    eq(FinancialAccount.id, FinancialAccountID),
+                    eq(FinancialAccount.id, FinancialAccountIDConverted),
                     eq(FinancialAccount.userID, userID)
                 )
             )
@@ -99,21 +108,25 @@ export namespace FinancialAccountService {
 
     export async function DeleteFinancialAccount({ userID }: userIDModel, { FinancialAccountID }: FinancialAccountModel.FinancialAccountParams) {
 
-       const row = await db
-        .delete(FinancialAccount)
-        .where(
-             and(
-                    eq(FinancialAccount.id, FinancialAccountID),
+        const FinancialAccountIDConverted = parseInt(FinancialAccountID)
+
+        if (isNaN(FinancialAccountIDConverted)) throw status(400, "Parameter should be numeric" satisfies FinancialAccountModel.FinancialAccountParamsInvalid)
+
+        const row = await db
+            .delete(FinancialAccount)
+            .where(
+                and(
+                    eq(FinancialAccount.id, FinancialAccountIDConverted),
                     eq(FinancialAccount.userID, userID)
                 )
-        ).returning(
-            {
-                id:FinancialAccount.id
-            }
-        )
+            ).returning(
+                {
+                    id: FinancialAccount.id
+                }
+            )
 
-        if(row.length === 0) throw status(404, "Financial account does not exists or access denied.")
+        if (row.length === 0) throw status(404, "Financial account does not exists or access denied.")
 
-        return {status: 200, message:`Account ${FinancialAccountID} deleted.`}
+        return { status: 200, message: `Account ${FinancialAccountID} deleted.` }
     }
 }
