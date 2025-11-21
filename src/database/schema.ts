@@ -32,6 +32,7 @@ export const AccountType = pgEnum('account_type',
     FinancialAccountType.Credit_card,
     FinancialAccountType.Invenstment,
     FinancialAccountType.Loan,
+    FinancialAccountType.Cash
   ]
 )
 
@@ -104,7 +105,7 @@ export const FinancialAccount = pgTable("financial_account", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   userID: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
   accountName: varchar('account_name', { length: 100 }).notNull(),
-  account_type: AccountType('account_type').notNull(),
+  accountType: AccountType('account_type').notNull(),
   institution: varchar("institution", { length: 100 }),
   currentBalance: numeric('current_balance', { mode: "number", precision: 15, scale: 2 }).notNull(),
   lastSynced: timestamp('last_synced'),
