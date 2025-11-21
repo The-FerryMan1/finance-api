@@ -24,12 +24,16 @@ export namespace FinancialAccountModel {
         userID: t.String(),
         accountName: t.String(),
         accountType: t.Enum(FinancialAccountType),
-        institution: t.String(),
+        institution: t.Nullable(t.String()),
         currentBalance: t.Numeric(),
-        lastSynced: t.String()
+        lastSynced: t.Nullable(t.Date())
     })
 
     export type FinancialAccountResponse = typeof FinancialAccountResponse.static
+
+    export const FinancialAccountResponseArray = t.Array(FinancialAccountResponse)
+
+    export type FinancialAccountResponseArray = typeof FinancialAccountResponseArray.static
     
     export const FinancialAccountInvalid = t.Literal("Unable to create a financial account")
     
