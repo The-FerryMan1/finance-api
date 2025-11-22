@@ -31,7 +31,7 @@ export namespace CategoriesModel {
     id: t.Number(),
     userID: t.String(),
     categoryName: t.String(),
-    CategoryType: t.Enum(CategoryTypeEnum),
+    categoryType: t.Enum(CategoryTypeEnum),
     parentID: t.Nullable(t.Number()),
   });
 

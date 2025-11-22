@@ -15,10 +15,7 @@ export namespace CategoriesService {
       .returning();
 
     if (!row)
-      throw status(
-        400,
-        "Unable to create a category account." satisfies CategoriesModel.CategoriesInvalid
-      );
+      throw status(400, "Unable to retrieve the newly created category.");
     return row;
   }
 
