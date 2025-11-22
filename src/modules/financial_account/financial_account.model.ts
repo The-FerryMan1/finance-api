@@ -1,45 +1,51 @@
 import { t } from "elysia";
-import {FinancialAccountType} from "../../database/schema"
+import { FinancialAccountType } from "../../database/schema";
 
 export namespace FinancialAccountModel {
+  export const FinancialAccountBody = t.Object({
+    accountName: t.String(),
+    accountType: t.Enum(FinancialAccountType),
+    institution: t.String(),
+    currentBalance: t.Numeric(),
+  });
 
-    export const FinancialAccountBody = t.Object({
-        accountName: t.String(),
-        accountType: t.Enum(FinancialAccountType),
-        institution: t.String(),
-        currentBalance: t.Numeric(),
-    })
+  export type FinancialAccountBody = typeof FinancialAccountBody.static;
 
-    export type FinancialAccountBody = typeof FinancialAccountBody.static
+  export const FinancialAccountParams = t.Object({
+    FinancialAccountID: t.String(),
+  });
 
-    export const FinancialAccountParams = t.Object({
-        FinancialAccountID: t.String()
-    })
+  export type FinancialAccountParams = typeof FinancialAccountParams.static;
 
-    export type FinancialAccountParams = typeof FinancialAccountParams.static
+  export const FinancialAccountParamsInvalid = t.Literal(
+    "Parameter should be numeric"
+  );
 
-    export const FinancialAccountParamsInvalid = t.Literal("Parameter should be numeric")
+  export type FinancialAccountParamsInvalid =
+    typeof FinancialAccountParamsInvalid.static;
 
-    export type FinancialAccountParamsInvalid = typeof FinancialAccountParamsInvalid.static
+  export const FinancialAccountResponse = t.Object({
+    id: t.Number(),
+    userID: t.String(),
+    accountName: t.String(),
+    accountType: t.Enum(FinancialAccountType),
+    institution: t.Nullable(t.String()),
+    currentBalance: t.Numeric(),
+    lastSynced: t.Nullable(t.Date()),
+  });
 
+  export type FinancialAccountResponse = typeof FinancialAccountResponse.static;
 
-    export const FinancialAccountResponse = t.Object({
-        id: t.Number(),
-        userID: t.String(),
-        accountName: t.String(),
-        accountType: t.Enum(FinancialAccountType),
-        institution: t.Nullable(t.String()),
-        currentBalance: t.Numeric(),
-        lastSynced: t.Nullable(t.Date())
-    })
+  export const FinancialAccountResponseArray = t.Array(
+    FinancialAccountResponse
+  );
 
-    export type FinancialAccountResponse = typeof FinancialAccountResponse.static
+  export type FinancialAccountResponseArray =
+    typeof FinancialAccountResponseArray.static;
 
-    export const FinancialAccountResponseArray = t.Array(FinancialAccountResponse)
+  export const FinancialAccountInvalid = t.Literal(
+    "Unable to create a financial account"
+  );
 
-    export type FinancialAccountResponseArray = typeof FinancialAccountResponseArray.static
-    
-    export const FinancialAccountInvalid = t.Literal("Unable to create a financial account")
-    
-    export type FinancialAccountInvalid = typeof FinancialAccountInvalid.static
+  export type FinancialAccountInvalid = typeof FinancialAccountInvalid.static;
 }
