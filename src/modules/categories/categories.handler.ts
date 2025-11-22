@@ -4,6 +4,7 @@ import { CategoriesModel } from "./categories.model";
 import { CategoriesService } from "./categories.service";
 
 export const CategoriesHandler = new Elysia({ prefix: "categories" })
+
   .use(betterAuth)
   .post(
     "/",
@@ -36,7 +37,6 @@ export const CategoriesHandler = new Elysia({ prefix: "categories" })
       auth: true,
       response: {
         200: CategoriesModel.CategoriesResponseArray,
-        400: CategoriesModel.CategoriesInvalid,
       },
     }
   )

@@ -34,7 +34,6 @@ export namespace CategoriesModel {
     categoryType: t.Enum(CategoryTypeEnum),
     parentID: t.Nullable(t.Number()),
   });
-
   export type CategoriesResponse = typeof CategoriesResponse.static;
 
   export const CategoriesResponseArray = t.Array(CategoriesResponse);
@@ -44,6 +43,5 @@ export namespace CategoriesModel {
   export const CategoriesInvalid = t.Literal(
     "Unable to create a category account."
   );
-
   export type CategoriesInvalid = typeof CategoriesInvalid.static;
 }

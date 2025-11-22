@@ -13,9 +13,6 @@ export namespace CategoriesService {
       .insert(Categories)
       .values({ categoryName, categoryType, parentID, userID })
       .returning();
-
-    if (!row)
-      throw status(400, "Unable to retrieve the newly created category.");
     return row;
   }
 
@@ -106,6 +103,11 @@ export namespace CategoriesService {
       )
       .returning({ id: Categories.id });
 
-    if (!row.id) throw status(404, "Category does not exists or access denied");
+    if (!row) throw status(404, "Category does not exists or access denied");
+
+    return {
+      status: 200,
+      message: `Category with an ${categoryID} was deleted`,
+    };
   }
 }
