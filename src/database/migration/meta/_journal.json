@@ -15,6 +15,27 @@
       "when": 1763693668426,
       "tag": "0001_panoramic_the_watchers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1763891121249,
+      "tag": "0002_hard_hawkeye",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1763891179807,
+      "tag": "0003_unusual_turbo",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763893464088,
+      "tag": "0004_dark_wrecker",
+      "breakpoints": true
     }
   ]
 }

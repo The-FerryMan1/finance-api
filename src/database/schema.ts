@@ -137,11 +137,18 @@ export const Budgets = pgTable("budgets", {
   }),
   cycle: BudgetsCycleEnum("cycle").notNull(),
   stateDate: date("start_date").notNull(),
-  budgetatedAmount: numeric("budgetated_amount", {
+  budgetedAmount: numeric("budgeted_amount", {
     mode: "number",
     precision: 15,
     scale: 2,
-  }),
+  }).notNull(),
+  spentAmount: numeric("spent_amount", {
+    mode: "number",
+    precision: 15,
+    scale: 2,
+  })
+    .notNull()
+    .default(0.0),
 });
 
 export const Goals = pgTable("goals", {
