@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1764223956167,
-      "tag": "0000_serious_dust",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1764224622755,
-      "tag": "0001_volatile_maestro",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1764224673297,
-      "tag": "0002_careful_archangel",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1764225335197,
-      "tag": "0003_curly_manta",
+      "when": 1764225659625,
+      "tag": "0000_bumpy_inertia",
       "breakpoints": true
     }
   ]
