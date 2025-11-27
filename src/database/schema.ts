@@ -132,9 +132,11 @@ export const Budgets = pgTable("budgets", {
   userID: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  categoryID: integer("category_id").references(() => Categories.id, {
-    onDelete: "cascade",
-  }),
+  categoryID: integer("category_id")
+    .references(() => Categories.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   cycle: BudgetsCycleEnum("cycle").notNull(),
   stateDate: date("start_date").notNull(),
   budgetedAmount: numeric("budgeted_amount", {

@@ -24,7 +24,7 @@ export namespace BudgetService {
   }
 
   export async function ReadBudget({ userID }: BudgetModel.UserIDParams) {
-    const [budgetRow] = await db
+    const budgetRow = await db
       .select()
       .from(Budgets)
       .where(eq(Budgets.userID, userID));

@@ -22,9 +22,9 @@ export namespace BudgetModel {
     userID: t.String(),
     categoryID: t.Number(),
     cycle: t.Enum(BudgetsCycleType),
-    stateDate: t.Date(),
-    budgetedAmount: t.Numeric(),
-    spentAmount: t.Numeric(),
+    stateDate: t.String(),
+    budgetedAmount: t.Number(),
+    spentAmount: t.Number(),
   });
 
   export type BudgetResponse = typeof BudgetResponse.static;

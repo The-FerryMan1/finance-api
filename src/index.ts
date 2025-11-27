@@ -4,6 +4,7 @@ import { betterAuth } from "./middleware/betterAuth";
 import cors from "@elysiajs/cors";
 import { FinancialAccountHandler } from "./modules/financial_account/financial_account.handler";
 import { CategoriesHandler } from "./modules/categories/categories.handler";
+import { BundgetHandler } from "./modules/budgets/budget.handler";
 
 const app = new Elysia({ prefix: `/api/${Bun.env.API_VERSION as string}` })
   .use(
@@ -17,6 +18,7 @@ const app = new Elysia({ prefix: `/api/${Bun.env.API_VERSION as string}` })
   .use(openapi())
   .use(FinancialAccountHandler)
   .use(CategoriesHandler)
+  .use(BundgetHandler)
   .listen((Bun.env.PORT as string) || 3000);
 
 console.log(
