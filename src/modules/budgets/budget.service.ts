@@ -9,23 +9,32 @@ export namespace BudgetService {
     { budgetedAmount, categoryID, cycle, startDate }: BudgetModel.BudgetBody,
     { userID }: BudgetModel.UserIDParams
   ) {
-    console.log(categoryID);
+    // 1. Explicitly cast categoryID to a Number for safety in query functions
+    const categoryIDInt = Number(categoryID);
+
+    // 2. Perform the category existence check
     const categoryExists = await db.$count(
       Categories,
-      and(eq(Categories.id, categoryID), eq(Categories.userID, userID))
+      and(
+        eq(Categories.id, categoryIDInt), // Use the explicit integer
+        eq(Categories.userID, userID) // This should now bind correctly
+      )
     );
 
     if (categoryExists === 0) throw status(400, "Category doesn't exists.");
+
+    // 3. Perform the insertion (Also using the integer and fixing the date)
     const [newBudget] = await db
       .insert(Budgets)
       .values({
-        budgetedAmount,
+        budgetedAmount: budgetedAmount, // Always format NUMERIC
         cycle,
-        startDate: String(startDate),
-        userID: userID.trim(),
-        categoryID,
+        startDate: startDate.toISOString().split("T")[0], // Fix date format
+        categoryID: categoryIDInt, // Use the explicit integer
+        userID: userID.trim(), // Use trimmed user ID for safety
       })
       .returning();
+
     return newBudget;
   }
 

@@ -1,5 +1,4 @@
 import {
-  doublePrecision,
   integer,
   pgEnum,
   pgTable,
@@ -11,7 +10,6 @@ import {
   numeric,
   date,
   char,
-  PgTable,
 } from "drizzle-orm/pg-core";
 import { user } from "../../auth-schema";
 
@@ -74,7 +72,7 @@ export enum GoalType {
   DebtPayoff = "Debt Payoff",
 }
 
-export const GoalTypeEnum = pgEnum("cycle_type", [
+export const GoalTypeEnum = pgEnum("goal_type", [
   GoalType.Savings,
   GoalType.DebtPayoff,
 ]);
@@ -130,8 +128,8 @@ export const Transactions = pgTable("transactions", {
 export const Budgets = pgTable("budgets", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   userID: text("user_id")
-    .references(() => user.id, { onDelete: "cascade" })
-    .notNull(),
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   categoryID: integer("category_id")
     .references(() => Categories.id, {
       onDelete: "cascade",

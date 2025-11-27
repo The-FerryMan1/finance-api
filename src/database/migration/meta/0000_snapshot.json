@@ -1,5 +1,5 @@
 {
-  "id": "b109d29a-c6ad-440b-8de8-cba01c06e7e2",
+  "id": "1802390b-be31-4ea4-9657-e5e4476787bf",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -297,7 +297,7 @@
         },
         "goal_type": {
           "name": "goal_type",
-          "type": "cycle_type",
+          "type": "goal_type",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -770,8 +770,10 @@
       "name": "cycle_type",
       "schema": "public",
       "values": [
-        "Savings",
-        "Debt Payoff"
+        "Monthly",
+        "Weekly",
+        "Annual",
+        "Once"
       ]
     },
     "public.Category_type": {
@@ -780,6 +782,14 @@
       "values": [
         "Income",
         "Expense"
+      ]
+    },
+    "public.goal_type": {
+      "name": "goal_type",
+      "schema": "public",
+      "values": [
+        "Savings",
+        "Debt Payoff"
       ]
     },
     "public.transaction_type": {

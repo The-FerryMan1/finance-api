@@ -1,6 +1,7 @@
 CREATE TYPE "public"."account_type" AS ENUM('Checking', 'Savings', 'Credit card', 'Investment', 'Loan', 'Cash');--> statement-breakpoint
-CREATE TYPE "public"."cycle_type" AS ENUM('Savings', 'Debt Payoff');--> statement-breakpoint
+CREATE TYPE "public"."cycle_type" AS ENUM('Monthly', 'Weekly', 'Annual', 'Once');--> statement-breakpoint
 CREATE TYPE "public"."Category_type" AS ENUM('Income', 'Expense');--> statement-breakpoint
+CREATE TYPE "public"."goal_type" AS ENUM('Savings', 'Debt Payoff');--> statement-breakpoint
 CREATE TYPE "public"."transaction_type" AS ENUM('Cleared', 'Pending', 'Reconciled');--> statement-breakpoint
 CREATE TABLE "budgets" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "budgets_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
@@ -34,7 +35,7 @@ CREATE TABLE "goals" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "goals_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
 	"goal_name" varchar(100) NOT NULL,
-	"goal_type" "cycle_type" NOT NULL,
+	"goal_type" "goal_type" NOT NULL,
 	"target_amount" numeric(15, 2) DEFAULT 0 NOT NULL,
 	"target_date" date
 );

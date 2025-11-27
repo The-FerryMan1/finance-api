@@ -22,7 +22,7 @@ export namespace BudgetModel {
     userID: t.String(),
     categoryID: t.Number(),
     cycle: t.Enum(BudgetsCycleType),
-    startDate: t.Date(),
+    startDate: t.String(),
     budgetedAmount: t.Numeric(),
     spentAmount: t.Numeric(),
   });
