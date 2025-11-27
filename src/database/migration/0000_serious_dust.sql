@@ -1,14 +1,15 @@
-CREATE TYPE "public"."account_type" AS ENUM('Checking', 'Savings', 'Credit card', 'Investment', 'Loan');--> statement-breakpoint
+CREATE TYPE "public"."account_type" AS ENUM('Checking', 'Savings', 'Credit card', 'Investment', 'Loan', 'Cash');--> statement-breakpoint
 CREATE TYPE "public"."cycle_type" AS ENUM('Savings', 'Debt Payoff');--> statement-breakpoint
 CREATE TYPE "public"."Category_type" AS ENUM('Income', 'Expense');--> statement-breakpoint
 CREATE TYPE "public"."transaction_type" AS ENUM('Cleared', 'Pending', 'Reconciled');--> statement-breakpoint
 CREATE TABLE "budgets" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "budgets_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
-	"category_id" integer,
+	"category_id" integer NOT NULL,
 	"cycle" "cycle_type" NOT NULL,
 	"start_date" date NOT NULL,
-	"budgetated_amount" numeric(15, 2)
+	"budgeted_amount" numeric(15, 2) NOT NULL,
+	"spent_amount" numeric(15, 2) DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "categories" (

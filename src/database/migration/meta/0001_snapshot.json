@@ -1,6 +1,6 @@
 {
-  "id": "373ec4d0-407d-46d0-af5a-557ce07cbc54",
-  "prevId": "f316385f-b4de-4c71-8d37-6fbad557f768",
+  "id": "5ed9ddca-a0cd-4780-b7c3-c25589879730",
+  "prevId": "7d75695b-0f55-4286-95c4-0ef2846509c0",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -35,7 +35,7 @@
           "name": "category_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "cycle": {
           "name": "cycle",
@@ -44,17 +44,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "start_date": {
-          "name": "start_date",
-          "type": "date",
+        "budgeted_amount": {
+          "name": "budgeted_amount",
+          "type": "numeric(15, 2)",
           "primaryKey": false,
           "notNull": true
         },
-        "budgetated_amount": {
-          "name": "budgetated_amount",
+        "spent_amount": {
+          "name": "spent_amount",
           "type": "numeric(15, 2)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {},

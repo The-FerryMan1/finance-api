@@ -1,25 +1,31 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../../database";
-import { Budgets } from "../../database/schema";
+import { Budgets, Categories } from "../../database/schema";
 import { BudgetModel } from "./budget.model";
 import { status } from "elysia";
 
 export namespace BudgetService {
   export async function CreateBudget(
-    { budgetedAmount, categoryID, cycle, stateDate }: BudgetModel.BudgetBody,
-    { userID }: BudgetModel.UserIDParams,
+    { budgetedAmount, categoryID, cycle, startDate }: BudgetModel.BudgetBody,
+    { userID }: BudgetModel.UserIDParams
   ) {
+    console.log(categoryID);
+    const categoryExists = await db.$count(
+      Categories,
+      and(eq(Categories.id, categoryID), eq(Categories.userID, userID))
+    );
+
+    if (categoryExists === 0) throw status(400, "Category doesn't exists.");
     const [newBudget] = await db
       .insert(Budgets)
       .values({
         budgetedAmount,
         cycle,
-        stateDate: String(stateDate),
-        userID,
+        startDate: String(startDate),
+        userID: userID.trim(),
         categoryID,
       })
       .returning();
-
     return newBudget;
   }
 
@@ -34,7 +40,7 @@ export namespace BudgetService {
 
   export async function ReadBudgetById(
     { budgetID }: BudgetModel.BudgetIDParams,
-    { userID }: BudgetModel.UserIDParams,
+    { userID }: BudgetModel.UserIDParams
   ) {
     const budgetIDInt = parseInt(budgetID);
     if (isNaN(budgetIDInt)) throw status(400, "Parameter should be numeric.");
@@ -51,7 +57,7 @@ export namespace BudgetService {
   export async function UpdateBudget(
     { budgetedAmount, categoryID, cycle }: BudgetModel.BudgetBody,
     { budgetID }: BudgetModel.BudgetIDParams,
-    { userID }: BudgetModel.UserIDParams,
+    { userID }: BudgetModel.UserIDParams
   ) {
     const budgetIDInt = parseInt(budgetID);
     if (isNaN(budgetIDInt))
@@ -70,7 +76,7 @@ export namespace BudgetService {
 
   export async function DeleteBudget(
     { budgetID }: BudgetModel.BudgetIDParams,
-    { userID }: BudgetModel.UserIDParams,
+    { userID }: BudgetModel.UserIDParams
   ) {
     const budgetIDInt = parseInt(budgetID);
     if (isNaN(budgetIDInt))

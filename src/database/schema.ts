@@ -131,14 +131,15 @@ export const Budgets = pgTable("budgets", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   userID: text("user_id")
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
   categoryID: integer("category_id")
     .references(() => Categories.id, {
       onDelete: "cascade",
     })
     .notNull(),
   cycle: BudgetsCycleEnum("cycle").notNull(),
-  stateDate: date("start_date").notNull(),
+  startDate: date("start_date").notNull(),
   budgetedAmount: numeric("budgeted_amount", {
     mode: "number",
     precision: 15,

@@ -11,7 +11,7 @@ export namespace BudgetModel {
   export const BudgetBody = t.Object({
     categoryID: t.Number(),
     cycle: t.Enum(BudgetsCycleType),
-    stateDate: t.Date(),
+    startDate: t.Date(),
     budgetedAmount: t.Numeric(),
   });
 
@@ -22,9 +22,9 @@ export namespace BudgetModel {
     userID: t.String(),
     categoryID: t.Number(),
     cycle: t.Enum(BudgetsCycleType),
-    stateDate: t.String(),
-    budgetedAmount: t.Number(),
-    spentAmount: t.Number(),
+    startDate: t.Date(),
+    budgetedAmount: t.Numeric(),
+    spentAmount: t.Numeric(),
   });
 
   export type BudgetResponse = typeof BudgetResponse.static;

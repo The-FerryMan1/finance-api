@@ -15,6 +15,7 @@ const app = new Elysia({ prefix: `/api/${Bun.env.API_VERSION as string}` })
       allowedHeaders: ["Content-Type", "Authorization"],
     })
   )
+  .use(betterAuth)
   .use(openapi())
   .use(FinancialAccountHandler)
   .use(CategoriesHandler)

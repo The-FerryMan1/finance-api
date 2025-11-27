@@ -1,5 +1,5 @@
 {
-  "id": "f316385f-b4de-4c71-8d37-6fbad557f768",
+  "id": "7d75695b-0f55-4286-95c4-0ef2846509c0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -35,7 +35,7 @@
           "name": "category_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "cycle": {
           "name": "cycle",
@@ -50,11 +50,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "budgetated_amount": {
-          "name": "budgetated_amount",
+        "budgeted_amount": {
+          "name": "budgeted_amount",
           "type": "numeric(15, 2)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "spent_amount": {
+          "name": "spent_amount",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {},
@@ -755,7 +762,8 @@
         "Savings",
         "Credit card",
         "Investment",
-        "Loan"
+        "Loan",
+        "Cash"
       ]
     },
     "public.cycle_type": {

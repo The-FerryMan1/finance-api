@@ -1,1 +1,0 @@
-ALTER TABLE "budgets" ALTER COLUMN "category_id" SET NOT NULL;
