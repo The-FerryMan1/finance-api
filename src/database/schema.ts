@@ -45,12 +45,14 @@ export enum TrasanctionStatusType {
   Pending = "Pending",
   Cleared = "Cleared",
   Reconciled = "Reconciled",
+  Reverted = "Reverted",
 }
 
 export const TrasanctionStatusEnum = pgEnum("transaction_type", [
   TrasanctionStatusType.Cleared,
   TrasanctionStatusType.Pending,
   TrasanctionStatusType.Reconciled,
+  TrasanctionStatusType.Reverted,
 ]);
 
 export enum BudgetsCycleType {
@@ -123,6 +125,7 @@ export const Transactions = pgTable("transactions", {
   ),
   originalCurrency: char("original_currency", { length: 3 }),
   receiptURL: varchar("receipt_url", { length: 255 }),
+  isDeleted: boolean("is_deleted").notNull().default(false),
 });
 
 export const Budgets = pgTable("budgets", {

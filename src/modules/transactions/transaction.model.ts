@@ -12,6 +12,12 @@ export namespace TransactionModel {
   });
   export type TransactionBody = typeof TransactionBody.static;
 
+  export const TrasanctionIncomeBody = t.Object({
+    amount: t.Numeric(),
+  });
+
+  export type TrasanctionIncomeBody = typeof TrasanctionIncomeBody.static;
+
   export const TrasanctionParams = t.Object({
     trasanctionID: t.String(),
   });
