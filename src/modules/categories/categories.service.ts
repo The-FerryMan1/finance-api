@@ -14,6 +14,17 @@ export namespace CategoriesService {
     }: CategoriesModel.CategoriesBody,
     { userID }: CategoriesModel.userIDModel
   ) {
+    const checkFinancialAccount = await db.$count(
+      FinancialAccount,
+      and(
+        eq(FinancialAccount.id, financialID),
+        eq(FinancialAccount.userID, userID)
+      )
+    );
+
+    if (checkFinancialAccount === 0)
+      throw status(400, "Financial account does not exists or access denied.");
+
     const [row] = await db
       .insert(Categories)
       .values({

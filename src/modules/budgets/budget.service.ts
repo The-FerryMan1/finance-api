@@ -29,6 +29,17 @@ export namespace BudgetService {
 
     if (categoryExists === 0) throw status(400, "Category doesn't exists.");
 
+    const checkFinancialAccount = await db.$count(
+      FinancialAccount,
+      and(
+        eq(FinancialAccount.id, financialID),
+        eq(FinancialAccount.userID, userID)
+      )
+    );
+
+    if (checkFinancialAccount === 0)
+      throw status(400, "Financial account does not exists or access denied.");
+
     // 3. Perform the insertion (Also using the integer and fixing the date)
     const [newBudget] = await db
       .insert(Budgets)

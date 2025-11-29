@@ -126,6 +126,12 @@ export namespace TransactionService {
           )
         );
 
+      if (!financial)
+        throw status(
+          400,
+          "Financial account does not exists or access denied."
+        );
+
       const [incomeTransac] = await tx
         .insert(Transactions)
         .values({
