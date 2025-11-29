@@ -2,10 +2,11 @@ CREATE TYPE "public"."account_type" AS ENUM('Checking', 'Savings', 'Credit card'
 CREATE TYPE "public"."cycle_type" AS ENUM('Monthly', 'Weekly', 'Annual', 'Once');--> statement-breakpoint
 CREATE TYPE "public"."Category_type" AS ENUM('Income', 'Expense');--> statement-breakpoint
 CREATE TYPE "public"."goal_type" AS ENUM('Savings', 'Debt Payoff');--> statement-breakpoint
-CREATE TYPE "public"."transaction_type" AS ENUM('Cleared', 'Pending', 'Reconciled');--> statement-breakpoint
+CREATE TYPE "public"."transaction_type" AS ENUM('Cleared', 'Pending', 'Reconciled', 'Reverted');--> statement-breakpoint
 CREATE TABLE "budgets" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "budgets_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
+	"financial_id" integer NOT NULL,
 	"category_id" integer NOT NULL,
 	"cycle" "cycle_type" NOT NULL,
 	"start_date" date NOT NULL,
@@ -16,6 +17,7 @@ CREATE TABLE "budgets" (
 CREATE TABLE "categories" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "categories_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
+	"financial_id" integer NOT NULL,
 	"category_name" varchar(255) NOT NULL,
 	"category_type" "Category_type" NOT NULL,
 	"parent_id" integer
@@ -34,6 +36,7 @@ CREATE TABLE "financial_account" (
 CREATE TABLE "goals" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "goals_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
+	"financial_id" integer NOT NULL,
 	"goal_name" varchar(100) NOT NULL,
 	"goal_type" "goal_type" NOT NULL,
 	"target_amount" numeric(15, 2) DEFAULT 0 NOT NULL,
@@ -43,13 +46,15 @@ CREATE TABLE "goals" (
 CREATE TABLE "transactions" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "transactions_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
-	"category_id" integer,
+	"financial_id" integer NOT NULL,
+	"category_id" integer NOT NULL,
 	"date" date NOT NULL,
 	"amount" numeric(15, 2) NOT NULL,
 	"description" varchar(255) NOT NULL,
-	"status" "transaction_type" DEFAULT 'Cleared',
+	"status" "transaction_type" DEFAULT 'Cleared' NOT NULL,
 	"original_currency" char(3),
-	"receipt_url" varchar(255)
+	"receipt_url" varchar(255),
+	"is_deleted" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "account" (
@@ -101,12 +106,16 @@ CREATE TABLE "verification" (
 );
 --> statement-breakpoint
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "budgets" ADD CONSTRAINT "budgets_financial_id_financial_account_id_fk" FOREIGN KEY ("financial_id") REFERENCES "public"."financial_account"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "categories" ADD CONSTRAINT "categories_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "categories" ADD CONSTRAINT "categories_financial_id_financial_account_id_fk" FOREIGN KEY ("financial_id") REFERENCES "public"."financial_account"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "categories" ADD CONSTRAINT "categories_parent_id_categories_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "financial_account" ADD CONSTRAINT "financial_account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "goals" ADD CONSTRAINT "goals_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "goals" ADD CONSTRAINT "goals_financial_id_financial_account_id_fk" FOREIGN KEY ("financial_id") REFERENCES "public"."financial_account"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_financial_id_financial_account_id_fk" FOREIGN KEY ("financial_id") REFERENCES "public"."financial_account"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
