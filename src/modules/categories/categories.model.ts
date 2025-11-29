@@ -8,6 +8,7 @@ export namespace CategoriesModel {
   export type userIDModel = typeof userIDModel.static;
 
   export const CategoriesBody = t.Object({
+    financialID: t.Number(),
     categoryName: t.String({ maxLength: 255 }),
     categoryType: t.Enum(CategoryTypeEnum),
     parentID: t.Nullable(t.Number()),

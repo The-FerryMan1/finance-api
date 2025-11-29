@@ -6,14 +6,14 @@ import { and, eq } from "drizzle-orm";
 
 export namespace CategoriesService {
   export async function CreateCategory(
-    { categoryType, categoryName, parentID }: CategoriesModel.CategoriesBody,
+    {
+      categoryType,
+      categoryName,
+      parentID,
+      financialID,
+    }: CategoriesModel.CategoriesBody,
     { userID }: CategoriesModel.userIDModel
   ) {
-    const [financialAccount] = await db
-      .select({ id: FinancialAccount.id })
-      .from(FinancialAccount)
-      .where(eq(FinancialAccount.userID, userID));
-
     const [row] = await db
       .insert(Categories)
       .values({
@@ -21,7 +21,7 @@ export namespace CategoriesService {
         categoryType,
         parentID,
         userID,
-        financialID: financialAccount.id,
+        financialID,
       })
       .returning();
     return row;
