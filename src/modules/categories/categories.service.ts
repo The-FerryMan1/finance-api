@@ -1,6 +1,6 @@
 import { status } from "elysia";
 import { db } from "../../database";
-import { Categories } from "../../database/schema";
+import { Categories, FinancialAccount } from "../../database/schema";
 import { CategoriesModel } from "./categories.model";
 import { and, eq } from "drizzle-orm";
 
@@ -9,9 +9,20 @@ export namespace CategoriesService {
     { categoryType, categoryName, parentID }: CategoriesModel.CategoriesBody,
     { userID }: CategoriesModel.userIDModel
   ) {
+    const [financialAccount] = await db
+      .select({ id: FinancialAccount.id })
+      .from(FinancialAccount)
+      .where(eq(FinancialAccount.userID, userID));
+
     const [row] = await db
       .insert(Categories)
-      .values({ categoryName, categoryType, parentID, userID })
+      .values({
+        categoryName,
+        categoryType,
+        parentID,
+        userID,
+        financialID: financialAccount.id,
+      })
       .returning();
     return row;
   }

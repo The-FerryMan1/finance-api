@@ -19,6 +19,7 @@ export namespace TransactionService {
       status: trasanctionStatus,
       budgetID,
       amount,
+      financialID,
     }: TransactionModel.TransactionBody,
     { userID }: TransactionModel.TransactionUserID
   ) {
@@ -30,7 +31,12 @@ export namespace TransactionService {
           id: FinancialAccount.id,
         })
         .from(FinancialAccount)
-        .where(eq(FinancialAccount.userID, userID));
+        .where(
+          and(
+            eq(FinancialAccount.userID, userID),
+            eq(FinancialAccount.id, financialID)
+          )
+        );
 
       if (amount < 0 && financial.currentBalance + amount < 0) {
         throw status(400, "Transaction Failed: Insufficient balance.");
@@ -71,6 +77,7 @@ export namespace TransactionService {
           status: trasanctionStatus,
           description,
           userID,
+          financialID: financial.id,
           categoryID,
         })
         .returning();
@@ -102,13 +109,23 @@ export namespace TransactionService {
       date,
       description,
       status: trasanctionStatus,
+      financialID,
     }: TransactionModel.TransactionBody,
-    { FinancialAccountID }: FinancialAccountModel.FinancialAccountParams,
     { userID }: TransactionModel.TransactionUserID
   ) {
     if (amount <= 0) throw status(400, "Amount shouldn't below 0 or negative");
 
     const incomeTransac = await db.transaction(async (tx) => {
+      const [financial] = await db
+        .select({ id: FinancialAccount.id })
+        .from(FinancialAccount)
+        .where(
+          and(
+            eq(FinancialAccount.id, Number(financialID)),
+            eq(FinancialAccount.userID, userID)
+          )
+        );
+
       const [incomeTransac] = await tx
         .insert(Transactions)
         .values({
@@ -117,6 +134,7 @@ export namespace TransactionService {
           date: String(date),
           description,
           status: trasanctionStatus,
+          financialID: financial.id,
           userID,
         })
         .returning();
@@ -128,7 +146,7 @@ export namespace TransactionService {
         })
         .where(
           and(
-            eq(FinancialAccount.id, Number(FinancialAccountID)),
+            eq(FinancialAccount.id, Number(financialID)),
             eq(FinancialAccount.userID, userID)
           )
         );
@@ -150,10 +168,10 @@ export namespace TransactionService {
   }
 
   export async function ReadTransactionByID(
-    { trasanctionID }: TransactionModel.TrasanctionParams,
+    { transactionID }: TransactionModel.TrasanctionParams,
     { userID }: TransactionModel.TransactionUserID
   ) {
-    const trasanctionIDInt = Number(trasanctionID);
+    const trasanctionIDInt = Number(transactionID);
     if (isNaN(trasanctionIDInt))
       throw status(400, "Access denied or invalid ID parameter.");
     const [trasanction] = await db
@@ -170,10 +188,10 @@ export namespace TransactionService {
   }
 
   export async function RevertTransaction(
-    { trasanctionID }: TransactionModel.TrasanctionParams,
+    { transactionID }: TransactionModel.TrasanctionParams,
     { userID }: TransactionModel.TransactionUserID
   ) {
-    const trasanctionIDInt = Number(trasanctionID);
+    const trasanctionIDInt = Number(transactionID);
     if (isNaN(trasanctionIDInt))
       throw status(400, "Access denied or invalid ID parameter.");
 
@@ -201,14 +219,17 @@ export namespace TransactionService {
         .set({
           currentBalance: sql`${FinancialAccount.currentBalance} + ${selectedTransac.amount}`,
         })
-        .where(eq(FinancialAccount.userID, userID));
+        .where(
+          and(
+            eq(FinancialAccount.userID, userID),
+            eq(FinancialAccount.id, selectedTransac.financialID)
+          )
+        );
 
       if (selectedTransac.categoryID) {
-        await tx
-          .update(Budgets)
-          .set({
-            spentAmount: sql`${FinancialAccount.currentBalance} + ${selectedTransac.amount}`,
-          });
+        await tx.update(Budgets).set({
+          spentAmount: sql`${FinancialAccount.currentBalance} + ${selectedTransac.amount}`,
+        });
       }
 
       await tx
@@ -224,9 +245,33 @@ export namespace TransactionService {
 
     return {
       status: 200,
-      message: `Trasanction:${trasanctionID} is reverted.`,
+      message: `Trasanction:${transactionID} is reverted.`,
     };
   }
 
-  // export async
+  export async function UpdateTransaction(
+    { description }: TransactionModel.TransactionUpdateBody,
+    { transactionID }: TransactionModel.TrasanctionParams,
+    { userID }: TransactionModel.TransactionUserID
+  ) {
+    const trasanctionIDInt = Number(transactionID);
+    if (isNaN(trasanctionIDInt))
+      throw status(400, "Access denied or invalid ID parameter.");
+
+    const [UpdatedTransaction] = await db
+      .update(Transactions)
+      .set({ description })
+      .where(
+        and(
+          eq(Transactions.id, trasanctionIDInt),
+          eq(Transactions.userID, userID)
+        )
+      )
+      .returning();
+
+    if (!UpdatedTransaction)
+      throw status(400, "DB: Failed to retrieve update record.");
+
+    return UpdatedTransaction;
+  }
 }

@@ -20,6 +20,7 @@ export namespace BudgetModel {
   export const BudgetResponse = t.Object({
     id: t.Number(),
     userID: t.String(),
+    financialID: t.Number(),
     categoryID: t.Number(),
     cycle: t.Enum(BudgetsCycleType),
     startDate: t.String(),

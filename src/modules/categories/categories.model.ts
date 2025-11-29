@@ -30,6 +30,7 @@ export namespace CategoriesModel {
   export const CategoriesResponse = t.Object({
     id: t.Number(),
     userID: t.String(),
+    financialID: t.Number(),
     categoryName: t.String(),
     categoryType: t.Enum(CategoryTypeEnum),
     parentID: t.Nullable(t.Number()),

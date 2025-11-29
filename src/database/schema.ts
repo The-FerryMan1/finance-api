@@ -100,6 +100,9 @@ export const Categories = pgTable("categories", {
   userID: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  financialID: integer("financial_id")
+    .references(() => FinancialAccount.id, { onDelete: "cascade" })
+    .notNull(),
   categoryName: varchar("category_name", { length: 255 }).notNull(),
   categoryType: CategoryType("category_type").notNull(),
   parentID: integer("parent_id").references((): AnyPgColumn => Categories.id),
@@ -110,9 +113,14 @@ export const Transactions = pgTable("transactions", {
   userID: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  categoryID: integer("category_id").references(() => Categories.id, {
-    onDelete: "cascade",
-  }),
+  financialID: integer("financial_id")
+    .references(() => FinancialAccount.id, { onDelete: "cascade" })
+    .notNull(),
+  categoryID: integer("category_id")
+    .references(() => Categories.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   date: date("date").notNull(),
   amount: numeric("amount", {
     mode: "number",
@@ -120,9 +128,9 @@ export const Transactions = pgTable("transactions", {
     scale: 2,
   }).notNull(),
   description: varchar("description", { length: 255 }).notNull(),
-  status: TrasanctionStatusEnum("status").default(
-    TrasanctionStatusType.Cleared
-  ),
+  status: TrasanctionStatusEnum("status")
+    .default(TrasanctionStatusType.Cleared)
+    .notNull(),
   originalCurrency: char("original_currency", { length: 3 }),
   receiptURL: varchar("receipt_url", { length: 255 }),
   isDeleted: boolean("is_deleted").notNull().default(false),
@@ -133,6 +141,9 @@ export const Budgets = pgTable("budgets", {
   userID: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  financialID: integer("financial_id")
+    .references(() => FinancialAccount.id, { onDelete: "cascade" })
+    .notNull(),
   categoryID: integer("category_id")
     .references(() => Categories.id, {
       onDelete: "cascade",
@@ -159,6 +170,9 @@ export const Goals = pgTable("goals", {
   userID: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  financialID: integer("financial_id")
+    .references(() => FinancialAccount.id, { onDelete: "cascade" })
+    .notNull(),
   goalName: varchar("goal_name", { length: 100 }).notNull(),
   goalType: GoalTypeEnum("goal_type").notNull(),
   targetAmount: numeric("target_amount", {

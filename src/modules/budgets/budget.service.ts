@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../../database";
-import { Budgets, Categories } from "../../database/schema";
+import { Budgets, Categories, FinancialAccount } from "../../database/schema";
 import { BudgetModel } from "./budget.model";
 import { status } from "elysia";
 
@@ -23,6 +23,11 @@ export namespace BudgetService {
 
     if (categoryExists === 0) throw status(400, "Category doesn't exists.");
 
+    const [financialAccount] = await db
+      .select({ id: FinancialAccount.id })
+      .from(FinancialAccount)
+      .where(eq(FinancialAccount.userID, userID));
+
     // 3. Perform the insertion (Also using the integer and fixing the date)
     const [newBudget] = await db
       .insert(Budgets)
@@ -32,6 +37,7 @@ export namespace BudgetService {
         startDate: startDate.toISOString().split("T")[0], // Fix date format
         categoryID: categoryIDInt, // Use the explicit integer
         userID: userID.trim(), // Use trimmed user ID for safety
+        financialID: financialAccount.id,
       })
       .returning();
 

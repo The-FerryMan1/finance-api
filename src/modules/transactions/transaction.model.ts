@@ -5,6 +5,7 @@ export namespace TransactionModel {
   export const TransactionBody = t.Object({
     categoryID: t.Number(),
     budgetID: t.Optional(t.Number()),
+    financialID: t.Number(),
     amount: t.Numeric(),
     date: t.Date(),
     description: t.String(),
@@ -19,7 +20,7 @@ export namespace TransactionModel {
   export type TrasanctionIncomeBody = typeof TrasanctionIncomeBody.static;
 
   export const TrasanctionParams = t.Object({
-    trasanctionID: t.String(),
+    transactionID: t.String(),
   });
 
   export type TrasanctionParams = typeof TrasanctionParams.static;
@@ -34,12 +35,14 @@ export namespace TransactionModel {
     id: t.Number(),
     userID: t.String(),
     categoryID: t.Number(),
-    date: t.Date(),
+    financialID: t.Number(),
+    date: t.String(),
     amount: t.Numeric(),
     description: t.String(),
     status: t.Enum(TrasanctionStatusType),
-    originalCurrency: t.Optional(t.String()),
-    receiptURL: t.Optional(t.String()),
+    originalCurrency: t.Optional(t.Union([t.String(), t.Null()])),
+    receiptURL: t.Optional(t.Union([t.String(), t.Null()])),
+    isDeleted: t.Boolean(),
   });
 
   export type TransactionResponse = typeof TransactionResponse.static;
@@ -53,4 +56,10 @@ export namespace TransactionModel {
   });
 
   export type TransactionUserID = typeof TransactionUserID.static;
+
+  export const TransactionUpdateBody = t.Object({
+    description: t.String(),
+  });
+
+  export type TransactionUpdateBody = typeof TransactionUpdateBody.static;
 }

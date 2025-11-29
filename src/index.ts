@@ -5,8 +5,11 @@ import cors from "@elysiajs/cors";
 import { FinancialAccountHandler } from "./modules/financial_account/financial_account.handler";
 import { CategoriesHandler } from "./modules/categories/categories.handler";
 import { BundgetHandler } from "./modules/budgets/budget.handler";
+import { auth } from "./lib/auth";
+import { TransationHandler } from "./modules/transactions/transaction.handler";
 
 const app = new Elysia({ prefix: `/api/${Bun.env.API_VERSION as string}` })
+  .mount(auth.handler)
   .use(
     cors({
       origin: ["http://localhost:3000", Bun.env.CLIENT_DOMAIN as string],
@@ -15,11 +18,12 @@ const app = new Elysia({ prefix: `/api/${Bun.env.API_VERSION as string}` })
       allowedHeaders: ["Content-Type", "Authorization"],
     })
   )
-  .use(betterAuth)
+
   .use(openapi())
   .use(FinancialAccountHandler)
   .use(CategoriesHandler)
   .use(BundgetHandler)
+  .use(TransationHandler)
   .listen((Bun.env.PORT as string) || 3000);
 
 console.log(
