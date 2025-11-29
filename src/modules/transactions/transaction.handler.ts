@@ -75,8 +75,8 @@ export const TransationHandler = new Elysia({ prefix: "transactions" })
       },
     }
   )
-  .post(
-    "/revert",
+  .delete(
+    "/revert/:transactionID",
     async ({ user, set, params: { transactionID } }) => {
       const response = await TransactionService.RevertTransaction(
         { transactionID },

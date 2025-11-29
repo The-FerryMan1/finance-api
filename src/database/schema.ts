@@ -121,6 +121,9 @@ export const Transactions = pgTable("transactions", {
       onDelete: "cascade",
     })
     .notNull(),
+  budgetID: integer("budget_id").references(() => Budgets.id, {
+    onDelete: "cascade",
+  }),
   date: date("date").notNull(),
   amount: numeric("amount", {
     mode: "number",

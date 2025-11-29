@@ -8,6 +8,13 @@
       "when": 1764397531389,
       "tag": "0000_unique_psylocke",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764412810149,
+      "tag": "0001_boring_sway",
+      "breakpoints": true
     }
   ]
 }

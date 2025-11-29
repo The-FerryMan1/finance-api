@@ -90,6 +90,7 @@ export namespace TransactionService {
           userID,
           financialID: financial.id,
           categoryID,
+          budgetID,
         })
         .returning();
 
@@ -120,6 +121,7 @@ export namespace TransactionService {
       date,
       description,
       status: trasanctionStatus,
+      budgetID,
       financialID,
     }: TransactionModel.TransactionBody,
     { userID }: TransactionModel.TransactionUserID
@@ -142,11 +144,12 @@ export namespace TransactionService {
         .values({
           amount,
           categoryID,
-          date: String(date),
+          date: new Date(date).toISOString().split("T")[0],
           description,
           status: trasanctionStatus,
           financialID: financial.id,
           userID,
+          budgetID,
         })
         .returning();
 
@@ -209,7 +212,13 @@ export namespace TransactionService {
     await db.transaction(async (tx) => {
       //find the transaction to be reverted
       const [selectedTransac] = await tx
-        .select()
+        .select({
+          id: Transactions.id,
+          amount: Transactions.amount,
+          status: Transactions.status,
+          financialID: Transactions.financialID,
+          budgetID: Transactions.budgetID, // CRITICAL: Ensure this is included
+        })
         .from(Transactions)
         .where(
           and(
@@ -218,7 +227,7 @@ export namespace TransactionService {
           )
         )
         .limit(1);
-
+      console.log(selectedTransac);
       if (!selectedTransac)
         throw status(404, "Transaction does not exist or Acess denied.");
 
@@ -237,10 +246,13 @@ export namespace TransactionService {
           )
         );
 
-      if (selectedTransac.categoryID) {
-        await tx.update(Budgets).set({
-          spentAmount: sql`${FinancialAccount.currentBalance} + ${selectedTransac.amount}`,
-        });
+      if (selectedTransac.budgetID) {
+        await tx
+          .update(Budgets)
+          .set({
+            spentAmount: sql`${Budgets.spentAmount} - ${selectedTransac.amount}`,
+          })
+          .where(and(eq(Budgets.id, selectedTransac.budgetID)));
       }
 
       await tx
