@@ -1,4 +1,4 @@
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt, lte, sql } from "drizzle-orm";
 import { db } from "../../database";
 import {
   Budgets,
@@ -46,12 +46,23 @@ export namespace TransactionService {
       if (budgetID) {
         const [budget] = await tx
           .select({
+            id: Budgets.id,
             budgetedAmount: Budgets.budgetedAmount,
             spentAmount: Budgets.spentAmount,
           })
           .from(Budgets)
-          .where(eq(Budgets.userID, userID));
-
+          .where(
+            and(
+              eq(Budgets.userID, userID),
+              eq(Budgets.id, budgetID),
+              eq(Budgets.categoryID, categoryID),
+              lte(Budgets.startDate, new Date(date).toISOString().split("T")[0])
+            )
+          )
+          .limit(1);
+        console.log(budget);
+        if (!budget)
+          throw status(400, "Budget does not exists or access denied.");
         //check if the transaction is expense and exceed budget
 
         if (amount < 0 && budget.spentAmount - amount > budget.budgetedAmount) {
@@ -59,13 +70,13 @@ export namespace TransactionService {
         }
 
         //update budget
-
+        console.log(`${budget.spentAmount} - ${amount}`);
         await tx
           .update(Budgets)
           .set({
-            spentAmount: sql`${budget.spentAmount} - ${amount}`,
+            spentAmount: sql`${Budgets.spentAmount} - ${amount}`,
           })
-          .where(and(eq(Budgets.userID, userID), eq(Budgets.id, budgetID)));
+          .where(eq(Budgets.id, budget.id));
       }
 
       //create transaction
@@ -73,7 +84,7 @@ export namespace TransactionService {
         .insert(Transactions)
         .values({
           amount,
-          date: String(date),
+          date: new Date(date).toISOString().split("T")[0],
           status: trasanctionStatus,
           description,
           userID,
@@ -124,12 +135,6 @@ export namespace TransactionService {
             eq(FinancialAccount.id, Number(financialID)),
             eq(FinancialAccount.userID, userID)
           )
-        );
-
-      if (!financial)
-        throw status(
-          400,
-          "Financial account does not exists or access denied."
         );
 
       const [incomeTransac] = await tx
