@@ -9,6 +9,7 @@ export namespace BudgetModel {
   export type UserIDParams = typeof UserIDParams.static;
 
   export const BudgetBody = t.Object({
+    financialID: t.Number(),
     categoryID: t.Number(),
     cycle: t.Enum(BudgetsCycleType),
     startDate: t.Date(),

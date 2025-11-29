@@ -6,7 +6,13 @@ import { status } from "elysia";
 
 export namespace BudgetService {
   export async function CreateBudget(
-    { budgetedAmount, categoryID, cycle, startDate }: BudgetModel.BudgetBody,
+    {
+      budgetedAmount,
+      categoryID,
+      cycle,
+      startDate,
+      financialID,
+    }: BudgetModel.BudgetBody,
     { userID }: BudgetModel.UserIDParams
   ) {
     // 1. Explicitly cast categoryID to a Number for safety in query functions
@@ -23,11 +29,6 @@ export namespace BudgetService {
 
     if (categoryExists === 0) throw status(400, "Category doesn't exists.");
 
-    const [financialAccount] = await db
-      .select({ id: FinancialAccount.id })
-      .from(FinancialAccount)
-      .where(eq(FinancialAccount.userID, userID));
-
     // 3. Perform the insertion (Also using the integer and fixing the date)
     const [newBudget] = await db
       .insert(Budgets)
@@ -37,7 +38,7 @@ export namespace BudgetService {
         startDate: startDate.toISOString().split("T")[0], // Fix date format
         categoryID: categoryIDInt, // Use the explicit integer
         userID: userID.trim(), // Use trimmed user ID for safety
-        financialID: financialAccount.id,
+        financialID,
       })
       .returning();
 
